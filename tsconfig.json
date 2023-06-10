@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "module": "NodeNext",
+        "moduleResolution": "nodenext",
+        "target": "ES2020",
+        "sourceMap": true,
+        "outDir": "dist",
+        "allowJs": false,
+        "typeRoots": ["src/@types"]
+    },
+    "files": ["src/@types/graphql.d.ts"],
+    "include": ["src/**/*","src/**/*.graphql"],
+    "exclude": ["node_modules","**/*.spec.ts"]
+}

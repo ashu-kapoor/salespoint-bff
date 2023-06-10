@@ -1,0 +1,33 @@
+
+input SearchCustomerInput {
+  fields: [String!]
+  searchTerm: String
+  filter: String
+}
+
+input AddCustomerInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  amount: Int!
+}
+
+type Customer {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  amount: Float!
+}
+
+
+type Query {
+  customers: [Customer!]
+  customer(id: ID!): Customer
+  searchCustomer(input: SearchCustomerInput!): [Customer!]
+}
+
+type Mutation {
+  addCustomer(input: AddCustomerInput!): Customer
+  updateCustomer(id:ID!, request:SearchCustomerInput!) : Customer
+}

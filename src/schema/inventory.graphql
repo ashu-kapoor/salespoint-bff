@@ -1,0 +1,31 @@
+
+input SearchInventoryInput {
+  fields: [String!]
+  searchTerm: String
+  filter: String
+}
+
+input AddInventoryInput {
+  quantity: Int!
+  productName: String!
+  price: Float!
+}
+
+type Inventory {
+  id: ID!
+  quantity: Int!
+  productName: String!
+  price: Float!
+}
+
+
+type Query {
+  inventories: [Inventory!]
+  inventory(id: ID!): Inventory
+  searchInventory(input: SearchInventoryInput!): [Inventory!]
+}
+
+type Mutation {
+  addInventory(input: AddInventoryInput!): Inventory
+  updateInventory(id:ID!, request:AddInventoryInput!) : Inventory
+}

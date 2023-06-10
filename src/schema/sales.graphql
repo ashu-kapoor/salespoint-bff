@@ -1,0 +1,59 @@
+
+type Command{
+  command: String!
+}
+
+type StepInfo{
+  FORWARD: Command!
+  COMPENSATE: Command
+}
+
+type Steps{
+  channel: String!
+  stepInfo: StepInfo!
+  reason: String!
+  stepStage: String!
+  stepStatus: String!
+}
+
+type Saga{
+   currentStep: Int!
+    currentChannel: String!
+    steps: [Steps!]!
+}
+
+type Sales {
+  id: ID!
+  quantity: Int!
+  customerId: String!
+  productId: String!
+  amount: Float!
+  status: String
+  customer: Customer
+  inventory: Inventory
+  saga: Saga
+}
+
+
+input SearchSalesInput {
+  fields: [String!]
+  searchTerm: String
+  filter: String
+}
+
+input AddSalesInput {
+  quantity: Int!
+  productId: String!
+  customerId: String!
+  amount: Float!
+}
+
+
+type Query {
+  sale(id: ID!): Sales
+  searchSales(input: SearchSalesInput!): [Sales!]
+}
+
+type Mutation {
+  createSales(input: AddSalesInput!): Sales
+}
