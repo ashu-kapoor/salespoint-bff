@@ -33,9 +33,8 @@ const inventoryResolvers: Resolvers = {
     addInventory: async (_parent, { input }: { input: AddInventoryInput }) => InventoryService.getInstance().addInventory(input),
     updateInventory: async (
       _parent,
-      {id, request} : { id:string,request: AddInventoryInput },
-     // { request }: { request: AddInventoryInput }
-    ) => InventoryService.getInstance().updateInventory(id as string,request)
+      {id, request} : { id:string,request: AddInventoryInput }
+    ) => InventoryService.getInstance().updateInventory(id ,request)
   },
 };
 
