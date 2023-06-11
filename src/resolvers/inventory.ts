@@ -1,3 +1,4 @@
+import InventoryService from "../client/InventoryService.js";
 import type {
   Inventory,
   AddInventoryInput,
@@ -14,28 +15,27 @@ const inventoryData: Inventory[] = [
 
 const inventoryResolvers: Resolvers = {
   Query: {
-    inventory: async (_parent, { id }) => {
-      const record: Inventory = _.find(inventoryData, { id: id as any });
-      return record;
+    inventory: (_parent, { id }) => {
+      /*let data = _.find(inventoryData, { id: id as any });
+      if(data==undefined){
+        return null;
+      }
+      return data;*/
+      return InventoryService.getInstance().getInventorybyId(id as string);
     },
-    inventories: async () => inventoryData,
+    inventories: async () => InventoryService.getInstance().getInventorybyFilter({}),
     searchInventory: async (
       _parent,
       { input }: { input: SearchInventoryInput }
-    ) => {
-      const { fields, searchTerm, filter } = input;
-
-      return inventoryData;
-    },
+    ) => InventoryService.getInstance().getInventorybyFilter(input),
   },
   Mutation: {
-    addInventory: async (_parent, { input }: { input: AddInventoryInput }) =>
-      inventoryData[0],
+    addInventory: async (_parent, { input }: { input: AddInventoryInput }) => InventoryService.getInstance().addInventory(input),
     updateInventory: async (
       _parent,
-      id,
-      { request }: { request: AddInventoryInput }
-    ) => inventoryData[1],
+      {id, request} : { id:string,request: AddInventoryInput },
+     // { request }: { request: AddInventoryInput }
+    ) => InventoryService.getInstance().updateInventory(id as string,request)
   },
 };
 

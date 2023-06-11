@@ -19,7 +19,7 @@ dotenv.config();
 const app: Express = express();
 
 const httpServer: Server = http.createServer(app);
-const port = process.env.port || 3000;
+const port = process.env.port ?? 3000;
 
 interface MyContext {
   token?: string;
@@ -37,7 +37,6 @@ const handler = (req: Request, res: Response) => {
   res.send("Server is up");
 };
 
-//
 
 app.get("/", handler);
 app.use(

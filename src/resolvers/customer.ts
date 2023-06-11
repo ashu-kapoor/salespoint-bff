@@ -1,3 +1,4 @@
+import CustomerService from "../client/CustomerService.js";
 import type {
   AddCustomerInput,
   Customer,
@@ -25,28 +26,19 @@ const customer: Customer[] = [
 
 const customerResolvers: Resolvers = {
   Query: {
-    customer: async (_parent, { id }) => {
-      const record: Customer = _.find(customer, { id: id as any });
-      return record;
-    },
-    customers: async () => customer,
+    customer: (_parent, { id }) =>  CustomerService.getInstance().getCustomerbyId(id as string),
+    customers: async () => CustomerService.getInstance().getCustomerbyFilter({}),
     searchCustomer: async (
       _parent,
       { input }: { input: SearchCustomerInput }
-    ) => {
-      const { fields, searchTerm, filter } = input;
-
-      return customer;
-    },
+    ) => CustomerService.getInstance().getCustomerbyFilter(input),
   },
   Mutation: {
-    addCustomer: async (_parent, { input }: { input: AddCustomerInput }) =>
-      customer[0],
+    addCustomer: async (_parent, { input }: { input: AddCustomerInput }) => CustomerService.getInstance().addCustomer(input),
     updateCustomer: async (
       _parent,
-      id,
-      { request }: { request: AddCustomerInput }
-    ) => customer[1],
+      {id, request} : { id:string,request: AddCustomerInput }
+    ) => CustomerService.getInstance().updateCustomer(id, request)
   },
 };
 

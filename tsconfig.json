@@ -6,7 +6,11 @@
         "sourceMap": true,
         "outDir": "dist",
         "allowJs": false,
-        "typeRoots": ["src/@types"]
+        "typeRoots": ["src/@types"],
+        "strict": false,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "skipLibCheck": true //due to lodash issue
     },
     "files": ["src/@types/graphql.d.ts"],
     "include": ["src/**/*","src/**/*.graphql"],

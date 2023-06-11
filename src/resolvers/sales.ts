@@ -1,3 +1,4 @@
+import SalesService from "../client/SalesService.js";
 import type {
   AddSalesInput,
   Resolvers,
@@ -78,16 +79,11 @@ const sales: Sales[] = [
 
 const salesResolvers: Resolvers = {
   Query: {
-    sale: async (_parent, { id }) => sales[0],
-    searchSales: async (_parent, { input }: { input: SearchSalesInput }) => {
-      const { fields, searchTerm, filter } = input;
-
-      return sales;
-    },
+    sale: async (_parent, { id }) => SalesService.getInstance().getSalesById(id as string),
+    searchSales: async (_parent, { input }: { input: SearchSalesInput }) =>  SalesService.getInstance().getSalesByFilter(input),
   },
   Mutation: {
-    createSales: async (_parent, { input }: { input: AddSalesInput }) =>
-      sales[0],
+    createSales: async (_parent, { input }: { input: AddSalesInput }) => SalesService.getInstance().createSales(input)
   },
 };
 

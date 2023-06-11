@@ -29,5 +29,5 @@ type Query {
 
 type Mutation {
   addCustomer(input: AddCustomerInput!): Customer
-  updateCustomer(id:ID!, request:SearchCustomerInput!) : Customer
+  updateCustomer(id:ID!, request:AddCustomerInput!) : Customer
 }

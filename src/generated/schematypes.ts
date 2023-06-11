@@ -85,7 +85,7 @@ export type MutationCreateSalesArgs = {
 
 export type MutationUpdateCustomerArgs = {
   id: Scalars['ID']['input'];
-  request: SearchCustomerInput;
+  request: AddCustomerInput;
 };
 
 
