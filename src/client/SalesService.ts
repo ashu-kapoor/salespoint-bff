@@ -1,5 +1,9 @@
-import { AddSalesInput, Sales, SearchSalesInput } from "../generated/schematypes.js";
-import ConnectionFactory from "./ConnectionFactory.js";
+import {
+  AddSalesInput,
+  Sales,
+  SearchSalesInput,
+} from "../generated/schematypes.js";
+import ConnectionFactory from "./ConnectionFacade.js";
 
 export default class SalesService {
   private static instance: SalesService;
@@ -15,12 +19,14 @@ export default class SalesService {
   }
 
   public async getSalesById(id: string): Promise<Sales> {
-    return this.connectionFactory.getData<Sales, Sales>(
-      `${process.env.SEARCH_BASE_URL}/search/sales/${id}`,
-      undefined,
-      undefined,
-      undefined
-    ).then(a=>a.data);
+    return this.connectionFactory
+      .getData<Sales, Sales>(
+        `${process.env.SEARCH_BASE_URL}/search/sales/${id}`,
+        undefined,
+        undefined,
+        undefined
+      )
+      .then((a) => a.data);
   }
 
   public async getSalesByFilter(input: SearchSalesInput): Promise<Sales[]> {
@@ -39,19 +45,17 @@ export default class SalesService {
         data,
         undefined
       )
-      .then(a=>a.data);
+      .then((a) => a.data);
   }
 
-
   public async createSales(input: AddSalesInput): Promise<Sales> {
-
     return this.connectionFactory
-          .postData<AddSalesInput, Sales>(
-              `${process.env.SALES_BASE_URL}/sales`,
-              undefined,
-              input,
-              undefined
-          ).then(a=>a.data);
-      
+      .postData<AddSalesInput, Sales>(
+        `${process.env.SALES_BASE_URL}/sales`,
+        undefined,
+        input,
+        undefined
+      )
+      .then((a) => a.data);
   }
 }

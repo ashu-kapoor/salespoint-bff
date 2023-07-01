@@ -1,5 +1,9 @@
-import { AddCustomerInput, Customer, SearchCustomerInput } from "../generated/schematypes.js";
-import ConnectionFactory from "./ConnectionFactory.js";
+import {
+  AddCustomerInput,
+  Customer,
+  SearchCustomerInput,
+} from "../generated/schematypes.js";
+import ConnectionFactory from "./ConnectionFacade.js";
 
 export default class CustomerService {
   private static instance: CustomerService;
@@ -15,12 +19,14 @@ export default class CustomerService {
   }
 
   public async getCustomerbyId(id: string): Promise<Customer> {
-    return await this.connectionFactory.getData<Customer, Customer>(
-      `${process.env.SEARCH_BASE_URL}/search/customer/${id}`,
-      undefined,
-      undefined,
-      undefined
-    ).then(a=>a.data);
+    return await this.connectionFactory
+      .getData<Customer, Customer>(
+        `${process.env.SEARCH_BASE_URL}/search/customer/${id}`,
+        undefined,
+        undefined,
+        undefined
+      )
+      .then((a) => a.data);
   }
 
   public async getCustomerbyFilter(
@@ -47,28 +53,28 @@ export default class CustomerService {
       });
   }
 
-
   public async addCustomer(input: AddCustomerInput): Promise<Customer> {
-
     return this.connectionFactory
-          .postData<AddCustomerInput, Customer>(
-              `${process.env.CUSTOMER_BASE_URL}/customers`,
-              undefined,
-              input,
-              undefined
-          ).then(a=>a.data);
-      
+      .postData<AddCustomerInput, Customer>(
+        `${process.env.CUSTOMER_BASE_URL}/customers`,
+        undefined,
+        input,
+        undefined
+      )
+      .then((a) => a.data);
   }
 
-  public async updateCustomer(id:string, input: AddCustomerInput): Promise<Customer> {
-
+  public async updateCustomer(
+    id: string,
+    input: AddCustomerInput
+  ): Promise<Customer> {
     return this.connectionFactory
-          .putData<AddCustomerInput, Customer>(
-              `${process.env.CUSTOMER_BASE_URL}/customers/${id}`,
-              undefined,
-              input,
-              undefined
-          ).then(a=>a.data);
-      
+      .putData<AddCustomerInput, Customer>(
+        `${process.env.CUSTOMER_BASE_URL}/customers/${id}`,
+        undefined,
+        input,
+        undefined
+      )
+      .then((a) => a.data);
   }
 }
