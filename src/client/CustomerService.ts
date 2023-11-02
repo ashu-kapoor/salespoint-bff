@@ -50,6 +50,10 @@ export default class CustomerService {
       .then((a) => {
         console.log(a);
         return a.data;
+      })
+      .catch((e) => {
+        console.log(e);
+        return e;
       });
   }
 

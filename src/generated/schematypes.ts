@@ -62,7 +62,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   addCustomer?: Maybe<Customer>;
   addInventory?: Maybe<Inventory>;
-  createSales?: Maybe<Sales>;
+  createSales?: Maybe<SalesResponse>;
   updateCustomer?: Maybe<Customer>;
   updateInventory?: Maybe<Inventory>;
 };
@@ -156,6 +156,12 @@ export type Sales = {
   status?: Maybe<Scalars['String']['output']>;
 };
 
+export type SalesResponse = {
+  __typename?: 'SalesResponse';
+  id: Scalars['ID']['output'];
+  status?: Maybe<Scalars['String']['output']>;
+};
+
 export type SearchCustomerInput = {
   fields?: InputMaybe<Array<Scalars['String']['input']>>;
   filter?: InputMaybe<Scalars['String']['input']>;
@@ -183,10 +189,10 @@ export type StepInfo = {
 export type Steps = {
   __typename?: 'Steps';
   channel: Scalars['String']['output'];
-  reason: Scalars['String']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
   stepInfo: StepInfo;
-  stepStage: Scalars['String']['output'];
-  stepStatus: Scalars['String']['output'];
+  stepStage?: Maybe<Scalars['String']['output']>;
+  stepStatus?: Maybe<Scalars['String']['output']>;
 };
 
 
@@ -274,6 +280,7 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Saga: ResolverTypeWrapper<Saga>;
   Sales: ResolverTypeWrapper<Sales>;
+  SalesResponse: ResolverTypeWrapper<SalesResponse>;
   SearchCustomerInput: SearchCustomerInput;
   SearchInventoryInput: SearchInventoryInput;
   SearchSalesInput: SearchSalesInput;
@@ -298,6 +305,7 @@ export type ResolversParentTypes = {
   Query: {};
   Saga: Saga;
   Sales: Sales;
+  SalesResponse: SalesResponse;
   SearchCustomerInput: SearchCustomerInput;
   SearchInventoryInput: SearchInventoryInput;
   SearchSalesInput: SearchSalesInput;
@@ -331,7 +339,7 @@ export type InventoryResolvers<ContextType = any, ParentType extends ResolversPa
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addCustomer?: Resolver<Maybe<ResolversTypes['Customer']>, ParentType, ContextType, RequireFields<MutationAddCustomerArgs, 'input'>>;
   addInventory?: Resolver<Maybe<ResolversTypes['Inventory']>, ParentType, ContextType, RequireFields<MutationAddInventoryArgs, 'input'>>;
-  createSales?: Resolver<Maybe<ResolversTypes['Sales']>, ParentType, ContextType, RequireFields<MutationCreateSalesArgs, 'input'>>;
+  createSales?: Resolver<Maybe<ResolversTypes['SalesResponse']>, ParentType, ContextType, RequireFields<MutationCreateSalesArgs, 'input'>>;
   updateCustomer?: Resolver<Maybe<ResolversTypes['Customer']>, ParentType, ContextType, RequireFields<MutationUpdateCustomerArgs, 'id' | 'request'>>;
   updateInventory?: Resolver<Maybe<ResolversTypes['Inventory']>, ParentType, ContextType, RequireFields<MutationUpdateInventoryArgs, 'id' | 'request'>>;
 };
@@ -367,6 +375,12 @@ export type SalesResolvers<ContextType = any, ParentType extends ResolversParent
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SalesResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['SalesResponse'] = ResolversParentTypes['SalesResponse']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type StepInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['StepInfo'] = ResolversParentTypes['StepInfo']> = {
   COMPENSATE?: Resolver<Maybe<ResolversTypes['Command']>, ParentType, ContextType>;
   FORWARD?: Resolver<ResolversTypes['Command'], ParentType, ContextType>;
@@ -375,10 +389,10 @@ export type StepInfoResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type StepsResolvers<ContextType = any, ParentType extends ResolversParentTypes['Steps'] = ResolversParentTypes['Steps']> = {
   channel?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  reason?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  reason?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   stepInfo?: Resolver<ResolversTypes['StepInfo'], ParentType, ContextType>;
-  stepStage?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  stepStatus?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  stepStage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  stepStatus?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -390,6 +404,7 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Saga?: SagaResolvers<ContextType>;
   Sales?: SalesResolvers<ContextType>;
+  SalesResponse?: SalesResponseResolvers<ContextType>;
   StepInfo?: StepInfoResolvers<ContextType>;
   Steps?: StepsResolvers<ContextType>;
 };

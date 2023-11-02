@@ -1,25 +1,24 @@
-
-type Command{
+type Command {
   command: String!
 }
 
-type StepInfo{
+type StepInfo {
   FORWARD: Command!
   COMPENSATE: Command
 }
 
-type Steps{
+type Steps {
   channel: String!
   stepInfo: StepInfo!
-  reason: String!
-  stepStage: String!
-  stepStatus: String!
+  reason: String
+  stepStage: String
+  stepStatus: String
 }
 
-type Saga{
-   currentStep: Int!
-    currentChannel: String!
-    steps: [Steps!]!
+type Saga {
+  currentStep: Int!
+  currentChannel: String!
+  steps: [Steps!]!
 }
 
 type Sales {
@@ -34,6 +33,10 @@ type Sales {
   saga: Saga
 }
 
+type SalesResponse {
+  id: ID!
+  status: String
+}
 
 input SearchSalesInput {
   fields: [String!]
@@ -48,12 +51,11 @@ input AddSalesInput {
   amount: Float!
 }
 
-
 type Query {
   sale(id: ID!): Sales
   searchSales(input: SearchSalesInput!): [Sales!]
 }
 
 type Mutation {
-  createSales(input: AddSalesInput!): Sales
+  createSales(input: AddSalesInput!): SalesResponse
 }

@@ -1,6 +1,7 @@
 import {
   AddSalesInput,
   Sales,
+  SalesResponse,
   SearchSalesInput,
 } from "../generated/schematypes.js";
 import ConnectionFactory from "./ConnectionFacade.js";
@@ -48,9 +49,9 @@ export default class SalesService {
       .then((a) => a.data);
   }
 
-  public async createSales(input: AddSalesInput): Promise<Sales> {
+  public async createSales(input: AddSalesInput): Promise<SalesResponse> {
     return this.connectionFactory
-      .postData<AddSalesInput, Sales>(
+      .postData<AddSalesInput, SalesResponse>(
         `${process.env.SALES_BASE_URL}/sales`,
         undefined,
         input,
