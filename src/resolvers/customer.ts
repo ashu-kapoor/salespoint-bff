@@ -6,6 +6,10 @@ import type {
   SearchCustomerInput,
 } from "../generated/schematypes.js";
 import _ from "lodash";
+import { MyContext } from "../index.js";
+import { SecurityRolesEnum } from "../security/SecurityRolesEnum.js";
+import { GraphQLError } from "graphql";
+import SecurityUtils from "../security/SecurityUtils.js";
 
 const customer: Customer[] = [
   {
@@ -26,19 +30,69 @@ const customer: Customer[] = [
 
 const customerResolvers: Resolvers = {
   Query: {
-    customer: (_parent, { id }) =>  CustomerService.getInstance().getCustomerbyId(id as string),
-    customers: async () => CustomerService.getInstance().getCustomerbyFilter({}),
+    customer: (_parent, { id }, contextValue: MyContext) => {
+      SecurityUtils.validateRole(contextValue.role, [
+        SecurityRolesEnum.OrderOnlyRole,
+        SecurityRolesEnum.SalesPoint_AdminRole,
+      ]);
+      return CustomerService.getInstance().getCustomerbyId(
+        id as string,
+        contextValue.authorization
+      );
+    },
+    customers: async (_parent, contextValue: MyContext) => {
+      SecurityUtils.validateRole(contextValue.role, [
+        SecurityRolesEnum.OrderOnlyRole,
+        SecurityRolesEnum.SalesPoint_AdminRole,
+      ]);
+      return CustomerService.getInstance().getCustomerbyFilter(
+        {},
+        contextValue.authorization
+      );
+    },
     searchCustomer: async (
       _parent,
-      { input }: { input: SearchCustomerInput }
-    ) => CustomerService.getInstance().getCustomerbyFilter(input),
+      { input }: { input: SearchCustomerInput },
+      contextValue: MyContext
+    ) => {
+      SecurityUtils.validateRole(contextValue.role, [
+        SecurityRolesEnum.OrderOnlyRole,
+        SecurityRolesEnum.SalesPoint_AdminRole,
+      ]);
+      return CustomerService.getInstance().getCustomerbyFilter(
+        input,
+        contextValue.authorization
+      );
+    },
   },
   Mutation: {
-    addCustomer: async (_parent, { input }: { input: AddCustomerInput }) => CustomerService.getInstance().addCustomer(input),
+    addCustomer: async (
+      _parent,
+      { input }: { input: AddCustomerInput },
+      contextValue: MyContext
+    ) => {
+      SecurityUtils.validateRole(contextValue.role, [
+        SecurityRolesEnum.SalesPoint_AdminRole,
+      ]);
+      return CustomerService.getInstance().addCustomer(
+        input,
+        contextValue.authorization
+      );
+    },
     updateCustomer: async (
       _parent,
-      {id, request} : { id:string,request: AddCustomerInput }
-    ) => CustomerService.getInstance().updateCustomer(id, request)
+      { id, request }: { id: string; request: AddCustomerInput },
+      contextValue: MyContext
+    ) => {
+      SecurityUtils.validateRole(contextValue.role, [
+        SecurityRolesEnum.SalesPoint_AdminRole,
+      ]);
+      return CustomerService.getInstance().updateCustomer(
+        id,
+        request,
+        contextValue.authorization
+      );
+    },
   },
 };
 

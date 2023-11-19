@@ -1,6 +1,7 @@
 import axios from "axios";
 import jwt, { Jwt, JwtPayload } from "jsonwebtoken";
 import { JwksClient } from "jwks-rsa";
+import { logger } from "../index.js";
 
 export default class SecurityService {
   private constructor() {}
@@ -13,7 +14,7 @@ export default class SecurityService {
     return this.instance;
   }
 
-  public async validateTokenOffline(token: string): Promise<boolean> {
+  public async validateTokenOffline(token: string): Promise<[string] | null> {
     const jwksUri = process.env.AUTH_SERVICE_JWKS || "";
 
     const client = new JwksClient({
@@ -26,12 +27,15 @@ export default class SecurityService {
       const decodedToken = jwt.decode(token, {
         complete: true,
       });
+      const roles: [string] = (decodedToken?.payload as JwtPayload)
+        ?.realm_access?.roles;
+      logger.info("Fetched roles for user ", roles);
       let key = await client.getSigningKey(decodedToken?.header.kid);
       jwt.verify(token, key.getPublicKey());
-      return true;
+      return roles;
     } catch (e) {
-      console.log(e);
-      return false;
+      logger.error("Error while validating token ", e);
+      return null;
     }
   }
 }

@@ -6,6 +6,9 @@ import type {
   SearchSalesInput,
 } from "../generated/schematypes.js";
 import _ from "lodash";
+import { MyContext } from "../index.js";
+import { SecurityRolesEnum } from "../security/SecurityRolesEnum.js";
+import SecurityUtils from "../security/SecurityUtils.js";
 
 const sales: Sales[] = [
   {
@@ -79,11 +82,46 @@ const sales: Sales[] = [
 
 const salesResolvers: Resolvers = {
   Query: {
-    sale: async (_parent, { id }) => SalesService.getInstance().getSalesById(id as string),
-    searchSales: async (_parent, { input }: { input: SearchSalesInput }) =>  SalesService.getInstance().getSalesByFilter(input),
+    sale: async (_parent, { id }, contextValue: MyContext) => {
+      SecurityUtils.validateRole(contextValue.role, [
+        SecurityRolesEnum.OrderOnlyRole,
+        SecurityRolesEnum.SalesPoint_AdminRole,
+      ]);
+      return SalesService.getInstance().getSalesById(
+        id as string,
+        contextValue.authorization
+      );
+    },
+    searchSales: async (
+      _parent,
+      { input }: { input: SearchSalesInput },
+      contextValue: MyContext
+    ) => {
+      SecurityUtils.validateRole(contextValue.role, [
+        SecurityRolesEnum.OrderOnlyRole,
+        SecurityRolesEnum.SalesPoint_AdminRole,
+      ]);
+      return SalesService.getInstance().getSalesByFilter(
+        input,
+        contextValue.authorization
+      );
+    },
   },
   Mutation: {
-    createSales: async (_parent, { input }: { input: AddSalesInput }) => SalesService.getInstance().createSales(input)
+    createSales: async (
+      _parent,
+      { input }: { input: AddSalesInput },
+      contextValue: MyContext
+    ) => {
+      SecurityUtils.validateRole(contextValue.role, [
+        SecurityRolesEnum.OrderOnlyRole,
+        SecurityRolesEnum.SalesPoint_AdminRole,
+      ]);
+      return SalesService.getInstance().createSales(
+        input,
+        contextValue.authorization
+      );
+    },
   },
 };
 

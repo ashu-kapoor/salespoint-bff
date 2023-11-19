@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@apollo/server": "^4.7.3",
+    "@elastic/ecs-winston-format": "^1.5.0",
     "@graphql-tools/graphql-file-loader": "^8.0.0",
     "@graphql-tools/load": "^8.0.0",
     "@graphql-tools/load-files": "^7.0.0",
@@ -37,6 +38,7 @@
     "graphql": "^16.6.0",
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.1.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "winston": "^3.11.0"
   }
 }
