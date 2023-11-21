@@ -38,6 +38,7 @@ export const logger = winston.createLogger({
 const server = new ApolloServer<MyContext>({
   typeDefs,
   resolvers,
+  introspection: true,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
 
