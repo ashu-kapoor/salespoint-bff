@@ -20,25 +20,27 @@ export default class InventoryService {
     return InventoryService.instance;
   }
 
-  public async getInventorybyId(id: string, auth: string): Promise<Inventory> {
+  public async getInventorybyId(
+    id: string,
+    auth: string,
+    correlationId: string
+  ): Promise<Inventory> {
     return this.connectionFactory
       .getData<Inventory, Inventory>(
         `${process.env.SEARCH_BASE_URL}/search/inventory/${id}`,
         undefined,
         undefined,
-        { Authorization: auth }
+        { Authorization: auth, correlationId }
       )
       .then((a) => a.data)
       .catch((e) => {
         if (axios.isAxiosError(e)) {
           logger.error(
-            "inventoryService: getinventorybyId: Error occurred while fetching the data ",
-            { code: e.code, message: e.message }
+            `X-CorrelationId:${correlationId} inventoryService: getinventorybyId: Error occurred while fetching the data  code: ${e.code}, message: ${e.message}`
           );
         } else {
           logger.error(
-            "inventoryService: getinventorybyId: Error occurred while fetching the data ",
-            e
+            `X-CorrelationId:${correlationId} inventoryService: getinventorybyId: Error occurred while fetching the data ${e}`
           );
         }
         return e;
@@ -47,7 +49,8 @@ export default class InventoryService {
 
   public async getInventorybyFilter(
     input: SearchInventoryInput,
-    auth: string
+    auth: string,
+    correlationId: string
   ): Promise<Inventory[]> {
     const { searchTerm, fields, filter } = input;
     const filterToPass = filter ?? undefined;
@@ -62,19 +65,17 @@ export default class InventoryService {
         `${process.env.SEARCH_BASE_URL}/search/inventory`,
         filterToPass === undefined ? undefined : { filter: filterToPass },
         data,
-        { Authorization: auth }
+        { Authorization: auth, correlationId }
       )
       .then((a) => a.data)
       .catch((e) => {
         if (axios.isAxiosError(e)) {
           logger.error(
-            "inventoryService: getinventorybyFilter: Error occurred while fetching the data ",
-            { code: e.code, message: e.message }
+            `X-CorrelationId:${correlationId} inventoryService: getinventorybyFilter: Error occurred while fetching the data  code: ${e.code}, message: ${e.message}`
           );
         } else {
           logger.error(
-            "inventoryService: getinventorybyFilter: Error occurred while fetching the data ",
-            e
+            `X-CorrelationId:${correlationId} inventoryService: getinventorybyFilter: Error occurred while fetching the data ${e}`
           );
         }
         return e;
@@ -83,26 +84,25 @@ export default class InventoryService {
 
   public async addInventory(
     input: AddInventoryInput,
-    auth: string
+    auth: string,
+    correlationId: string
   ): Promise<Inventory> {
     return this.connectionFactory
       .postData<AddInventoryInput, Inventory>(
         `${process.env.INVENTORY_BASE_URL}/inventories`,
         undefined,
         input,
-        { Authorization: auth }
+        { Authorization: auth, correlationId }
       )
       .then((a) => a.data)
       .catch((e) => {
         if (axios.isAxiosError(e)) {
           logger.error(
-            "inventoryService: addInventory Error occurred while fetching the data ",
-            { code: e.code, message: e.message }
+            `X-CorrelationId:${correlationId} inventoryService: addInventory Error occurred while fetching the data  code: ${e.code}, message: ${e.message}`
           );
         } else {
           logger.error(
-            "inventoryService: addInventory: Error occurred while fetching the data ",
-            e
+            `X-CorrelationId:${correlationId} inventoryService: addInventory: Error occurred while fetching the data ${e}`
           );
         }
         return e;
@@ -112,26 +112,25 @@ export default class InventoryService {
   public async updateInventory(
     id: string,
     input: AddInventoryInput,
-    auth: string
+    auth: string,
+    correlationId: string
   ): Promise<Inventory> {
     return this.connectionFactory
       .putData<AddInventoryInput, Inventory>(
         `${process.env.INVENTORY_BASE_URL}/inventory/items/${id}`,
         undefined,
         input,
-        { Authorization: auth }
+        { Authorization: auth, correlationId }
       )
       .then((a) => a.data)
       .catch((e) => {
         if (axios.isAxiosError(e)) {
           logger.error(
-            "inventoryService: updateInventory: Error occurred while fetching the data ",
-            { code: e.code, message: e.message }
+            `X-CorrelationId:${correlationId} inventoryService: updateInventory: Error occurred while fetching the data  code: ${e.code}, message: ${e.message}`
           );
         } else {
           logger.error(
-            "inventoryService: updateInventory: Error occurred while fetching the data ",
-            e
+            `X-CorrelationId:${correlationId} inventoryService: updateInventory: Error occurred while fetching the data ${e}`
           );
         }
         return e;

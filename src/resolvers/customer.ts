@@ -6,7 +6,7 @@ import type {
   SearchCustomerInput,
 } from "../generated/schematypes.js";
 import _ from "lodash";
-import { MyContext } from "../index.js";
+import { MyContext, logger } from "../index.js";
 import { SecurityRolesEnum } from "../security/SecurityRolesEnum.js";
 import { GraphQLError } from "graphql";
 import SecurityUtils from "../security/SecurityUtils.js";
@@ -35,9 +35,13 @@ const customerResolvers: Resolvers = {
         SecurityRolesEnum.OrderOnlyRole,
         SecurityRolesEnum.SalesPoint_AdminRole,
       ]);
+      logger.info(
+        `X-CorrelationId:${contextValue.correlationId} Getting customer by id`
+      );
       return CustomerService.getInstance().getCustomerbyId(
         id as string,
-        contextValue.authorization
+        contextValue.authorization,
+        contextValue.correlationId
       );
     },
     customers: async (_parent, contextValue: MyContext) => {
@@ -45,9 +49,14 @@ const customerResolvers: Resolvers = {
         SecurityRolesEnum.OrderOnlyRole,
         SecurityRolesEnum.SalesPoint_AdminRole,
       ]);
+
+      logger.info(
+        `X-CorrelationId:${contextValue.correlationId} Getting customers`
+      );
       return CustomerService.getInstance().getCustomerbyFilter(
         {},
-        contextValue.authorization
+        contextValue.authorization,
+        contextValue.correlationId
       );
     },
     searchCustomer: async (
@@ -59,9 +68,14 @@ const customerResolvers: Resolvers = {
         SecurityRolesEnum.OrderOnlyRole,
         SecurityRolesEnum.SalesPoint_AdminRole,
       ]);
+
+      logger.info(
+        `X-CorrelationId:${contextValue.correlationId} Getting customers by criteria`
+      );
       return CustomerService.getInstance().getCustomerbyFilter(
         input,
-        contextValue.authorization
+        contextValue.authorization,
+        contextValue.correlationId
       );
     },
   },
@@ -74,9 +88,14 @@ const customerResolvers: Resolvers = {
       SecurityUtils.validateRole(contextValue.role, [
         SecurityRolesEnum.SalesPoint_AdminRole,
       ]);
+
+      logger.info(
+        `X-CorrelationId:${contextValue.correlationId} Adding new customer`
+      );
       return CustomerService.getInstance().addCustomer(
         input,
-        contextValue.authorization
+        contextValue.authorization,
+        contextValue.correlationId
       );
     },
     updateCustomer: async (
@@ -87,10 +106,15 @@ const customerResolvers: Resolvers = {
       SecurityUtils.validateRole(contextValue.role, [
         SecurityRolesEnum.SalesPoint_AdminRole,
       ]);
+
+      logger.info(
+        `X-CorrelationId:${contextValue.correlationId} Adding new customer with id:${id}`
+      );
       return CustomerService.getInstance().updateCustomer(
         id,
         request,
-        contextValue.authorization
+        contextValue.authorization,
+        contextValue.correlationId
       );
     },
   },

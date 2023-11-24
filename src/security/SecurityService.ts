@@ -14,7 +14,10 @@ export default class SecurityService {
     return this.instance;
   }
 
-  public async validateTokenOffline(token: string): Promise<[string] | null> {
+  public async validateTokenOffline(
+    token: string,
+    correlationId: string
+  ): Promise<[string] | null> {
     const jwksUri = process.env.AUTH_SERVICE_JWKS || "";
 
     const client = new JwksClient({
@@ -29,12 +32,17 @@ export default class SecurityService {
       });
       const roles: [string] = (decodedToken?.payload as JwtPayload)
         ?.realm_access?.roles;
-      logger.info("Fetched roles for user ", roles);
+      const subj = (decodedToken?.payload as JwtPayload).name;
+      logger.info(
+        `X-CorrelationId:${correlationId} Fetched roles: ${roles} for User: ${subj}`
+      );
       let key = await client.getSigningKey(decodedToken?.header.kid);
       jwt.verify(token, key.getPublicKey());
       return roles;
     } catch (e) {
-      logger.error("Error while validating token ", e);
+      logger.error(
+        `X-CorrelationId:${correlationId} Error while validating token ${e}`
+      );
       return null;
     }
   }

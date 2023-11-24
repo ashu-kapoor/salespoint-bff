@@ -13,8 +13,6 @@ export default class SecurityUtils {
       !roleRequired.some((r) => roleToValidate.includes(r))
     ) {
       throw new GraphQLError("User Doesn't have necessary priviledges");
-    } else {
-      console.log(`User logged in with role ${roleToValidate}`);
     }
   }
 }

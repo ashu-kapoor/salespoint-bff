@@ -21,25 +21,27 @@ export default class SalesService {
     return SalesService.instance;
   }
 
-  public async getSalesById(id: string, auth: string): Promise<Sales> {
+  public async getSalesById(
+    id: string,
+    auth: string,
+    correlationId: string
+  ): Promise<Sales> {
     return this.connectionFactory
       .getData<Sales, Sales>(
         `${process.env.SEARCH_BASE_URL}/search/sales/${id}`,
         undefined,
         undefined,
-        { Authorization: auth }
+        { Authorization: auth, correlationId }
       )
       .then((a) => a.data)
       .catch((e) => {
         if (axios.isAxiosError(e)) {
           logger.error(
-            "salesService: getsalesById: Error occurred while fetching the data ",
-            { code: e.code, message: e.message }
+            `X-CorrelationId:${correlationId} salesService: getsalesById: Error occurred while fetching the data  code: ${e.code}, message: ${e.message}`
           );
         } else {
           logger.error(
-            "salesService: getsalesbyId: Error occurred while fetching the data ",
-            e
+            `X-CorrelationId:${correlationId} salesService: getsalesbyId: Error occurred while fetching the data ${e}`
           );
         }
         return e;
@@ -48,7 +50,8 @@ export default class SalesService {
 
   public async getSalesByFilter(
     input: SearchSalesInput,
-    auth: string
+    auth: string,
+    correlationId: string
   ): Promise<Sales[]> {
     const { searchTerm, fields, filter } = input;
     const filterToPass = filter ?? undefined;
@@ -63,19 +66,17 @@ export default class SalesService {
         `${process.env.SEARCH_BASE_URL}/search/sales`,
         filterToPass === undefined ? undefined : { filter: filterToPass },
         data,
-        { Authorization: auth }
+        { Authorization: auth, correlationId }
       )
       .then((a) => a.data)
       .catch((e) => {
         if (axios.isAxiosError(e)) {
           logger.error(
-            "salesService: getsalesbyFilter: Error occurred while fetching the data ",
-            { code: e.code, message: e.message }
+            `X-CorrelationId:${correlationId} salesService: getsalesbyFilter: Error occurred while fetching the data  code: ${e.code}, message: ${e.message}`
           );
         } else {
           logger.error(
-            "salesService: getsalesbyFilter: Error occurred while fetching the data ",
-            e
+            `X-CorrelationId:${correlationId} salesService: getsalesbyFilter: Error occurred while fetching the data ${e}`
           );
         }
         return e;
@@ -84,26 +85,25 @@ export default class SalesService {
 
   public async createSales(
     input: AddSalesInput,
-    auth: string
+    auth: string,
+    correlationId: string
   ): Promise<SalesResponse> {
     return this.connectionFactory
       .postData<AddSalesInput, SalesResponse>(
         `${process.env.SALES_BASE_URL}/sales`,
         undefined,
         input,
-        { Authorization: auth }
+        { Authorization: auth, correlationId }
       )
       .then((a) => a.data)
       .catch((e) => {
         if (axios.isAxiosError(e)) {
           logger.error(
-            "salesService: createSales: Error occurred while fetching the data ",
-            { code: e.code, message: e.message }
+            `X-CorrelationId:${correlationId} salesService: createSales: Error occurred while fetching the data  code: ${e.code}, message: ${e.message}`
           );
         } else {
           logger.error(
-            "salesService: createSales: Error occurred while fetching the data ",
-            e
+            `X-CorrelationId:${correlationId} salesService: createSales: Error occurred while fetching the data ${e}`
           );
         }
         return e;

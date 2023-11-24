@@ -11,8 +11,9 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import SecurityService from "./security/SecurityService.js";
 import { GraphQLError } from "graphql";
-import winston from "winston";
+import winston, { format } from "winston";
 import { ecsFormat } from "@elastic/ecs-winston-format";
+import { randomUUID } from "crypto";
 
 const typeDefs = loadSchemaSync("./**/*.graphql", {
   loaders: [new GraphQLFileLoader()],
@@ -24,14 +25,21 @@ const app: Express = express();
 
 const httpServer: Server = http.createServer(app);
 const port = process.env.port ?? 3000;
-
+const hostname = process.env.hostname ?? "localhost";
 export interface MyContext {
   authorization: string;
   role?: [string];
+  correlationId: string;
 }
 
+const { combine, timestamp, label, printf } = format;
+
+const myFormat = printf(({ level, message, label, timestamp }) => {
+  return `${timestamp} SalesPoint [${label}] ${level}: ${message}`;
+});
+
 export const logger = winston.createLogger({
-  format: ecsFormat(/* options */),
+  format: combine(label({ label: "salespoint-bff" }), timestamp(), myFormat),
   transports: [new winston.transports.Console()],
 });
 
@@ -67,10 +75,18 @@ app.use(
           },
         });
       }
+      const correlationId = randomUUID();
       const validToken =
-        await SecurityService.getInstance().validateTokenOffline(token);
+        await SecurityService.getInstance().validateTokenOffline(
+          token,
+          correlationId
+        );
       if (validToken) {
-        return { authorization: req.headers.authorization, role: validToken };
+        return {
+          authorization: req.headers.authorization,
+          role: validToken,
+          correlationId,
+        };
       } else {
         throw new GraphQLError("User is not authenticated", {
           extensions: {
@@ -83,5 +99,7 @@ app.use(
   })
 );
 
-await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
-logger.info(`[server]: Server is running at http://localhost:${port}`);
+await new Promise<void>((resolve) =>
+  httpServer.listen({ port, hostname }, resolve)
+);
+logger.info(`[server]: Server is running at http://${hostname}:${port}`);

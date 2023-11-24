@@ -6,7 +6,7 @@ import type {
   SearchSalesInput,
 } from "../generated/schematypes.js";
 import _ from "lodash";
-import { MyContext } from "../index.js";
+import { MyContext, logger } from "../index.js";
 import { SecurityRolesEnum } from "../security/SecurityRolesEnum.js";
 import SecurityUtils from "../security/SecurityUtils.js";
 
@@ -87,9 +87,14 @@ const salesResolvers: Resolvers = {
         SecurityRolesEnum.OrderOnlyRole,
         SecurityRolesEnum.SalesPoint_AdminRole,
       ]);
+
+      logger.info(
+        `X-CorrelationId:${contextValue.correlationId} Getting Order id:${id}`
+      );
       return SalesService.getInstance().getSalesById(
         id as string,
-        contextValue.authorization
+        contextValue.authorization,
+        contextValue.correlationId
       );
     },
     searchSales: async (
@@ -101,9 +106,14 @@ const salesResolvers: Resolvers = {
         SecurityRolesEnum.OrderOnlyRole,
         SecurityRolesEnum.SalesPoint_AdminRole,
       ]);
+
+      logger.info(
+        `X-CorrelationId:${contextValue.correlationId} Getting Orders by criteria`
+      );
       return SalesService.getInstance().getSalesByFilter(
         input,
-        contextValue.authorization
+        contextValue.authorization,
+        contextValue.correlationId
       );
     },
   },
@@ -117,9 +127,14 @@ const salesResolvers: Resolvers = {
         SecurityRolesEnum.OrderOnlyRole,
         SecurityRolesEnum.SalesPoint_AdminRole,
       ]);
+
+      logger.info(
+        `X-CorrelationId:${contextValue.correlationId} Creating Order`
+      );
       return SalesService.getInstance().createSales(
         input,
-        contextValue.authorization
+        contextValue.authorization,
+        contextValue.correlationId
       );
     },
   },

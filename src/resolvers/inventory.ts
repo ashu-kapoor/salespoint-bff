@@ -6,7 +6,7 @@ import type {
   Resolvers,
 } from "../generated/schematypes.js";
 import _ from "lodash";
-import { MyContext } from "../index.js";
+import { MyContext, logger } from "../index.js";
 import { SecurityRolesEnum } from "../security/SecurityRolesEnum.js";
 import SecurityUtils from "../security/SecurityUtils.js";
 
@@ -29,9 +29,14 @@ const inventoryResolvers: Resolvers = {
         SecurityRolesEnum.OrderOnlyRole,
         SecurityRolesEnum.SalesPoint_AdminRole,
       ]);
+
+      logger.info(
+        `X-CorrelationId:${contextValue.correlationId} Getting inventory id:${id}`
+      );
       return InventoryService.getInstance().getInventorybyId(
         id as string,
-        contextValue.authorization
+        contextValue.authorization,
+        contextValue.correlationId
       );
     },
     inventories: async (contextValue: MyContext) => {
@@ -39,9 +44,14 @@ const inventoryResolvers: Resolvers = {
         SecurityRolesEnum.OrderOnlyRole,
         SecurityRolesEnum.SalesPoint_AdminRole,
       ]);
+
+      logger.info(
+        `X-CorrelationId:${contextValue.correlationId} Getting inventories`
+      );
       return InventoryService.getInstance().getInventorybyFilter(
         {},
-        contextValue.authorization
+        contextValue.authorization,
+        contextValue.correlationId
       );
     },
     searchInventory: async (
@@ -53,9 +63,14 @@ const inventoryResolvers: Resolvers = {
         SecurityRolesEnum.OrderOnlyRole,
         SecurityRolesEnum.SalesPoint_AdminRole,
       ]);
+
+      logger.info(
+        `X-CorrelationId:${contextValue.correlationId} Getting inventory by criteria`
+      );
       return InventoryService.getInstance().getInventorybyFilter(
         input,
-        contextValue.authorization
+        contextValue.authorization,
+        contextValue.correlationId
       );
     },
   },
@@ -68,9 +83,14 @@ const inventoryResolvers: Resolvers = {
       SecurityUtils.validateRole(contextValue.role, [
         SecurityRolesEnum.SalesPoint_AdminRole,
       ]);
+
+      logger.info(
+        `X-CorrelationId:${contextValue.correlationId} Adding Inventory Item`
+      );
       return InventoryService.getInstance().addInventory(
         input,
-        contextValue.authorization
+        contextValue.authorization,
+        contextValue.correlationId
       );
     },
     updateInventory: async (
@@ -81,10 +101,15 @@ const inventoryResolvers: Resolvers = {
       SecurityUtils.validateRole(contextValue.role, [
         SecurityRolesEnum.SalesPoint_AdminRole,
       ]);
+
+      logger.info(
+        `X-CorrelationId:${contextValue.correlationId} Updating inventory id:${id}`
+      );
       return InventoryService.getInstance().updateInventory(
         id,
         request,
-        contextValue.authorization
+        contextValue.authorization,
+        contextValue.correlationId
       );
     },
   },

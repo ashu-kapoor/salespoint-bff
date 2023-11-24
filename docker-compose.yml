@@ -1,0 +1,14 @@
+version: "3.7"
+services:
+  salespoint_bff:
+    container_name: salespoint_bff
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    env_file:
+      - .env
+    ports:
+      - "${port}:${port}"
+    labels:
+      co.elastic.logs/enabled: true
